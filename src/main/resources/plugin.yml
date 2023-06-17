@@ -1,0 +1,7 @@
+name: VoteParty-FMS
+version: '${version}'
+main: me.glaremasters.vpfms.plugin.VotePartyFindMCServerPlugin
+api-version: 1.19
+depend: [ VoteParty ]
+authors: [ Glare ]
+description: FindMCServer Addon for VoteParty
