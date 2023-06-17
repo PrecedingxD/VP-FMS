@@ -11,7 +11,6 @@ import com.google.common.cache.CacheBuilder
 import com.google.gson.Gson
 import com.okkero.skedule.SynchronizationContext
 import com.okkero.skedule.schedule
-import me.clip.voteparty.events.VoteReceivedEvent
 import me.glaremasters.vpfms.base.Addon
 import me.glaremasters.vpfms.conf.sections.PluginSettings
 import me.glaremasters.vpfms.plugin.VotePartyFindMCServerPlugin
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit
 
 data class VoteResponse(val code: Int = 0, val content: Boolean = false, val error: String = "")
 
-@CommandAlias("fmcsvote")
+@CommandAlias("fmcsvote|vote")
 internal class CommandVPFMS(override val plugin: VotePartyFindMCServerPlugin) : BaseCommand(), Addon {
     private val scheduler = Bukkit.getScheduler()
     private val cache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build<UUID, Long>()
@@ -72,8 +71,6 @@ internal class CommandVPFMS(override val plugin: VotePartyFindMCServerPlugin) : 
                         when(response.code) {
                             200 -> {
                                 player.sendMessage(ACFBukkitUtil.color(vpfms.conf().getProperty(PluginSettings.VOTE_SUCCESS)))
-                                val event = VoteReceivedEvent(player, "FindMCServer")
-                                Bukkit.getPluginManager().callEvent(event)
                             }
                             400, 401 -> player.sendMessage("Error: ${response.error}")
                             else -> player.sendMessage("Unknown error: $data")

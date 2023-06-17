@@ -27,8 +27,6 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
 
-    compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
     implementation("me.ddevil:skedule:0.1.3.dirty")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
