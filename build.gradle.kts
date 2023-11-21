@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     implementation("me.ddevil:skedule:0.1.3.dirty")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
