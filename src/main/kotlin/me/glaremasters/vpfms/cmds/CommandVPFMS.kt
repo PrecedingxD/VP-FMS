@@ -9,8 +9,6 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
 import com.google.common.cache.CacheBuilder
 import com.google.gson.Gson
-import com.okkero.skedule.SynchronizationContext
-import com.okkero.skedule.schedule
 import me.glaremasters.vpfms.base.Addon
 import me.glaremasters.vpfms.conf.sections.PluginSettings
 import me.glaremasters.vpfms.plugin.VotePartyFindMCServerPlugin
@@ -58,25 +56,31 @@ internal class CommandVPFMS(override val plugin: VotePartyFindMCServerPlugin) : 
             logger.info("Payload: $payload")
         }
 
-        scheduler.schedule(plugin, SynchronizationContext.ASYNC) {
+        scheduler.runTaskAsynchronously(plugin, Runnable {
             Fuel.post(vpfms.conf().getProperty(PluginSettings.API_URL))
                 .header(Headers.USER_AGENT, "VoteParty - FindMCServer Addon v1.0")
                 .header(Headers.CONTENT_TYPE, "application/json")
                 .body(payload)
                 .responseString { _, resp, result ->
-                    val (data, error) = result
-                    val response: VoteResponse = gson.fromJson(resp.body().asString("application/json"), VoteResponse::class.java)
+                    val (data, _) = result
+                    val response: VoteResponse =
+                        gson.fromJson(resp.body().asString("application/json"), VoteResponse::class.java)
 
-                    scheduler.schedule(plugin, SynchronizationContext.SYNC) {
-                        when(response.code) {
+                    scheduler.runTask(plugin, Runnable {
+                        when (response.code) {
                             200 -> {
-                                player.sendMessage(ACFBukkitUtil.color(vpfms.conf().getProperty(PluginSettings.VOTE_SUCCESS)))
+                                player.sendMessage(
+                                    ACFBukkitUtil.color(
+                                        vpfms.conf().getProperty(PluginSettings.VOTE_SUCCESS)
+                                    )
+                                )
                             }
+
                             400, 401 -> player.sendMessage("Error: ${response.error}")
                             else -> player.sendMessage("Unknown error: $data")
                         }
-                    }
+                    })
                 }
-        }
+        })
     }
 }
